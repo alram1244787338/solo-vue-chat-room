@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 import { useChatStore } from '@/stores/chat'
+import { formatTime as formatTimeUtil } from '@/utils/format'
 
 export function useMessages() {
   const chatStore = useChatStore()
@@ -28,12 +29,7 @@ export function useMessages() {
     chatStore.addMessage(currentChannelId.value, message)
   }
 
-  function formatTime(timestamp) {
-    const date = new Date(timestamp)
-    const hours = date.getHours().toString().padStart(2, '0')
-    const minutes = date.getMinutes().toString().padStart(2, '0')
-    return `${hours}:${minutes}`
-  }
+  const formatTime = formatTimeUtil
 
   return {
     currentMessages,

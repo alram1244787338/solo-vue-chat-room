@@ -12,7 +12,7 @@
         class="message-input"
         placeholder="输入消息... (Enter 发送，Shift+Enter 换行)"
         @keydown="handleKeydown"
-        @compositionstart="isComposing = true"
+        @compositionstart="startComposition"
         @compositionend="onCompositionEnd"
         @input="autoResize"
       ></textarea>
@@ -28,26 +28,25 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
+import { useChatInput } from '@/composables/useChatInput'
 
 const emit = defineEmits(['send'])
 
-const inputText = ref('')
-const textareaRef = ref(null)
-const isComposing = ref(false)
+const { inputText, isComposing, canSend, startComposition, endComposition, clearInput } = useChatInput()
 
-const canSend = computed(() => inputText.value.trim().length > 0 && !isComposing.value)
+const textareaRef = ref(null)
 
 function doSend() {
   if (!canSend.value) return
   emit('send', inputText.value)
-  inputText.value = ''
+  clearInput()
   autoResize()
   textareaRef.value?.focus()
 }
 
-function onCompositionEnd(e) {
-  isComposing.value = false
+function onCompositionEnd() {
+  endComposition()
   autoResize()
 }
 

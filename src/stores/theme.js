@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 const STORAGE_KEY = 'chat-room-theme'
 
-function loadThemeFromStorage() {
+export function loadThemeFromStorage() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
     return saved === 'dark'
@@ -12,7 +12,7 @@ function loadThemeFromStorage() {
   }
 }
 
-function saveThemeToStorage(isDark) {
+export function saveThemeToStorage(isDark) {
   try {
     localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light')
   } catch (e) {}
@@ -21,16 +21,14 @@ function saveThemeToStorage(isDark) {
 export const useThemeStore = defineStore('theme', () => {
   const isDark = ref(loadThemeFromStorage())
 
-  watch(isDark, (val) => {
-    saveThemeToStorage(val)
-  }, { immediate: true })
-
   function toggleTheme() {
     isDark.value = !isDark.value
+    saveThemeToStorage(isDark.value)
   }
 
   function setTheme(dark) {
     isDark.value = dark
+    saveThemeToStorage(isDark.value)
   }
 
   return {
