@@ -12,6 +12,8 @@
         class="message-input"
         placeholder="输入消息... (Enter 发送，Shift+Enter 换行)"
         @keydown="handleKeydown"
+        @compositionstart="isComposing = true"
+        @compositionend="onCompositionEnd"
         @input="autoResize"
       ></textarea>
       <button
@@ -32,8 +34,9 @@ const emit = defineEmits(['send'])
 
 const inputText = ref('')
 const textareaRef = ref(null)
+const isComposing = ref(false)
 
-const canSend = computed(() => inputText.value.trim().length > 0)
+const canSend = computed(() => inputText.value.trim().length > 0 && !isComposing.value)
 
 function doSend() {
   if (!canSend.value) return
@@ -43,8 +46,13 @@ function doSend() {
   textareaRef.value?.focus()
 }
 
+function onCompositionEnd(e) {
+  isComposing.value = false
+  autoResize()
+}
+
 function handleKeydown(e) {
-  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+  if (e.key === 'Enter' && !e.shiftKey && !isComposing.value) {
     e.preventDefault()
     doSend()
   }

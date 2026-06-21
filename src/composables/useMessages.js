@@ -6,8 +6,10 @@ export function useMessages() {
 
   const currentChannelId = computed(() => chatStore.currentChannel)
 
+  const isSwitching = computed(() => chatStore.isSwitchingChannel)
+
   const currentMessages = computed(() => {
-    return chatStore.messagesByChannel[currentChannelId.value] || []
+    return chatStore.getMessages(currentChannelId.value)
   })
 
   function sendMessage(content) {
@@ -23,10 +25,7 @@ export function useMessages() {
       timestamp: Date.now()
     }
 
-    if (!chatStore.messagesByChannel[currentChannelId.value]) {
-      chatStore.messagesByChannel[currentChannelId.value] = []
-    }
-    chatStore.messagesByChannel[currentChannelId.value].push(message)
+    chatStore.addMessage(currentChannelId.value, message)
   }
 
   function formatTime(timestamp) {
@@ -39,6 +38,7 @@ export function useMessages() {
   return {
     currentMessages,
     currentChannelId,
+    isSwitching,
     sendMessage,
     formatTime
   }

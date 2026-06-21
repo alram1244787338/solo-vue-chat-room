@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 
 const FAKE_USERS = [
   { id: 'me', name: '我', avatar: '👤' },
@@ -45,23 +45,43 @@ export const useChatStore = defineStore('chat', () => {
   const currentUser = ref(FAKE_USERS[0])
   const allUsers = ref(FAKE_USERS)
   const currentChannel = ref('general')
+  const isSwitchingChannel = ref(false)
   const channels = ref([
     { id: 'general', name: '综合讨论', unread: 0 },
     { id: 'tech', name: '技术交流', unread: 0 },
     { id: 'random', name: '随便聊聊', unread: 0 }
   ])
-  const messagesByChannel = ref({ ...INITIAL_MESSAGES })
+  const messagesByChannel = reactive({ ...INITIAL_MESSAGES })
+
+  function getMessages(channelId) {
+    return messagesByChannel[channelId] || []
+  }
+
+  function addMessage(channelId, message) {
+    if (!messagesByChannel[channelId]) {
+      messagesByChannel[channelId] = []
+    }
+    messagesByChannel[channelId].push(message)
+  }
 
   function switchChannel(channelId) {
+    if (channelId === currentChannel.value) return
+    isSwitchingChannel.value = true
     currentChannel.value = channelId
+    setTimeout(() => {
+      isSwitchingChannel.value = false
+    }, 80)
   }
 
   return {
     currentUser,
     allUsers,
     currentChannel,
+    isSwitchingChannel,
     channels,
     messagesByChannel,
+    getMessages,
+    addMessage,
     switchChannel
   }
 })

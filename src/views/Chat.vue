@@ -3,8 +3,17 @@
     <Sidebar />
     <div class="chat-main">
       <ChatHeader />
-      <div ref="messagesContainer" class="chat-messages">
-        <template v-if="currentMessages.length > 0">
+      <div
+        ref="messagesContainer"
+        class="chat-messages"
+        @scroll="onScroll"
+      >
+        <template v-if="isSwitching">
+          <div class="loading-state">
+            <div class="loading-spinner"></div>
+          </div>
+        </template>
+        <template v-else-if="currentMessages.length > 0">
           <ChatMessage
             v-for="msg in currentMessages"
             :key="msg.id"
@@ -30,11 +39,24 @@ import ChatInput from '@/components/ChatInput.vue'
 import ChatMessage from '@/components/ChatMessage.vue'
 import { useMessages } from '@/composables/useMessages'
 
-const { currentMessages, currentChannelId, sendMessage, formatTime } = useMessages()
+const { currentMessages, currentChannelId, isSwitching, sendMessage, formatTime } = useMessages()
 
 const messagesContainer = ref(null)
+const isAtBottom = ref(true)
 
-function scrollToBottom() {
+function checkAtBottom() {
+  const el = messagesContainer.value
+  if (!el) return true
+  const threshold = 30
+  return el.scrollTop + el.clientHeight >= el.scrollHeight - threshold
+}
+
+function onScroll() {
+  isAtBottom.value = checkAtBottom()
+}
+
+function scrollToBottom(force = false) {
+  if (!force && !isAtBottom.value) return
   nextTick(() => {
     if (messagesContainer.value) {
       messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
@@ -46,9 +68,16 @@ function handleSend(content) {
   sendMessage(content)
 }
 
-watch([currentMessages, currentChannelId], () => {
-  scrollToBottom()
-}, { immediate: true, deep: true })
+watch(currentMessages, () => {
+  scrollToBottom(isAtBottom.value)
+}, { deep: true })
+
+watch(currentChannelId, () => {
+  isAtBottom.value = true
+  nextTick(() => {
+    scrollToBottom(true)
+  })
+})
 </script>
 
 <style lang="scss" scoped>
@@ -93,5 +122,27 @@ watch([currentMessages, currentChannelId], () => {
 
 .empty-text {
   font-size: 16px;
+}
+
+.loading-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent-green);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
