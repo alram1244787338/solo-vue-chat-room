@@ -7,13 +7,18 @@
     </div>
     <div class="input-area">
       <textarea
+        ref="textareaRef"
         v-model="inputText"
         class="message-input"
-        placeholder="输入消息..."
-        :disabled="true"
-        @keydown.enter.prevent
+        placeholder="输入消息... (Enter 发送，Shift+Enter 换行)"
+        @keydown="handleKeydown"
+        @input="autoResize"
       ></textarea>
-      <button class="send-btn" :disabled="true">
+      <button
+        class="send-btn"
+        :disabled="!canSend"
+        @click="doSend"
+      >
         发送
       </button>
     </div>
@@ -21,9 +26,36 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+
+const emit = defineEmits(['send'])
 
 const inputText = ref('')
+const textareaRef = ref(null)
+
+const canSend = computed(() => inputText.value.trim().length > 0)
+
+function doSend() {
+  if (!canSend.value) return
+  emit('send', inputText.value)
+  inputText.value = ''
+  autoResize()
+  textareaRef.value?.focus()
+}
+
+function handleKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+    e.preventDefault()
+    doSend()
+  }
+}
+
+function autoResize() {
+  const el = textareaRef.value
+  if (!el) return
+  el.style.height = 'auto'
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px'
+}
 </script>
 
 <style lang="scss" scoped>
@@ -72,16 +104,12 @@ const inputText = ref('')
   background-color: var(--bg-input);
   color: var(--text-primary);
   font-size: 14px;
+  line-height: 1.5;
   resize: none;
   transition: border-color 0.2s;
 
   &:focus {
     border-color: var(--accent-green);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
   }
 
   &::placeholder {
