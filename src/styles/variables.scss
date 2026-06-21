@@ -1,0 +1,91 @@
+// 微信风格主题变量
+
+// 浅色主题
+$bg-primary: #ededed;
+$bg-secondary: #ffffff;
+$bg-tertiary: #f7f7f7;
+$bg-chat: #ededed;
+$bg-input: #ffffff;
+$bg-sidebar: #2e2e2e;
+$bg-sidebar-hover: #3a3a3a;
+$bg-sidebar-active: #1a1a1a;
+
+$text-primary: #181818;
+$text-secondary: #888888;
+$text-tertiary: #b2b2b2;
+$text-sidebar: #ffffff;
+$text-sidebar-secondary: #999999;
+
+$border-color: #dcdcdc;
+$border-light: #e5e5e5;
+
+$accent-green: #07c160;
+$accent-green-hover: #06ad56;
+$accent-blue: #576b95;
+$accent-red: #fa5151;
+
+$bubble-self: #95ec69;
+$bubble-other: #ffffff;
+$bubble-text-self: #000000;
+$bubble-text-other: #181818;
+
+// 深色主题
+.theme-dark {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2c2c2c;
+  --bg-tertiary: #232323;
+  --bg-chat: #1a1a1a;
+  --bg-input: #2c2c2c;
+  --bg-sidebar: #1a1a1a;
+  --bg-sidebar-hover: #2a2a2a;
+  --bg-sidebar-active: #3a3a3a;
+
+  --text-primary: #ffffff;
+  --text-secondary: #999999;
+  --text-tertiary: #666666;
+  --text-sidebar: #ffffff;
+  --text-sidebar-secondary: #999999;
+
+  --border-color: #3a3a3a;
+  --border-light: #333333;
+
+  --accent-green: #07c160;
+  --accent-green-hover: #06ad56;
+  --accent-blue: #576b95;
+  --accent-red: #fa5151;
+
+  --bubble-self: #95ec69;
+  --bubble-other: #2c2c2c;
+  --bubble-text-self: #000000;
+  --bubble-text-other: #ffffff;
+}
+
+:root {
+  --bg-primary: #{$bg-primary};
+  --bg-secondary: #{$bg-secondary};
+  --bg-tertiary: #{$bg-tertiary};
+  --bg-chat: #{$bg-chat};
+  --bg-input: #{$bg-input};
+  --bg-sidebar: #{$bg-sidebar};
+  --bg-sidebar-hover: #{$bg-sidebar-hover};
+  --bg-sidebar-active: #{$bg-sidebar-active};
+
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+  --text-tertiary: #{$text-tertiary};
+  --text-sidebar: #{$text-sidebar};
+  --text-sidebar-secondary: #{$text-sidebar-secondary};
+
+  --border-color: #{$border-color};
+  --border-light: #{$border-light};
+
+  --accent-green: #{$accent-green};
+  --accent-green-hover: #{$accent-green-hover};
+  --accent-blue: #{$accent-blue};
+  --accent-red: #{$accent-red};
+
+  --bubble-self: #{$bubble-self};
+  --bubble-other: #{$bubble-other};
+  --bubble-text-self: #{$bubble-text-self};
+  --bubble-text-other: #{$bubble-text-other};
+}
